@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { LoginInput } from './dto/login.input';
 import { SignUpInput } from './dto/sign-up.input';
 import { AuthLoginResponseDto } from './dto/auth-login-response.dto';
+import { User } from '../entities/user.entity';
 
 
 @Resolver()
@@ -27,7 +28,7 @@ export class AuthResolver {
     return this.authService.refreshAccessToken(token);
   }
 
-  @Mutation()
+  @Mutation(() => User)
   public async logout(@Args('id', { type: () => Int }) id: number): Promise<void> {
     return this.authService.logout(id);
   }

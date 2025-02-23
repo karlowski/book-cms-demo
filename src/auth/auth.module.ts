@@ -5,6 +5,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthResolver } from './auth.resolver';
 import { AuthRedisService } from './auth-redis.service';
+import { EntitiesModule } from '../entities/entities.module';
+import { CommonServiceModule } from '../common/services/common-service.module';
 
 
 @Module({
@@ -18,8 +20,14 @@ import { AuthRedisService } from './auth-redis.service';
         },
       }),
       inject: [ConfigService]
-    })
+    }),
+    EntitiesModule,
+    CommonServiceModule
   ],
-  providers: [AuthResolver, AuthService, AuthRedisService],
+  providers: [
+    AuthResolver, 
+    AuthService, 
+    AuthRedisService
+  ],
 })
 export class AuthModule {}

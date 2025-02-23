@@ -8,7 +8,7 @@ import { PaginationResponseDto } from '../common/dto/pagination-response.dto';
 import { Book } from '../entities/book.entity';
 import { BookFiltersDto } from './dto/book-filters.input';
 import { CacheRedisService } from '../common/services/cache-redis.service';
-import { CacheKeysEnum } from 'src/common/enums/cache-keys.enum';
+import { CacheKeysEnum } from '../common/enums/cache-keys.enum';
 
 
 @Injectable()
