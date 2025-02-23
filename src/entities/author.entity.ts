@@ -9,7 +9,10 @@ export class Author {
   id: number;
 
   @Column()
-  name?: string;
+  name: string;
+
+  @Column()
+  description?: string;
 
   @OneToMany(() => Book, book => book.author, { cascade: true })
   books: Book[];

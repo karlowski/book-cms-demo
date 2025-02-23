@@ -17,6 +17,10 @@ export class RedisSharedService implements OnModuleInit, OnModuleDestroy {
     });
   }
 
+  public getClient(): Redis {
+    return this._redisClient;
+  }
+
   public async set(key: string, value: string, ttl?: number): Promise<void> {
     if (ttl) {
       await this._redisClient.set(key, value, 'EX', ttl);

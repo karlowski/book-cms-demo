@@ -1,9 +1,11 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 
 import { BookService } from './book.service';
-import { Book } from './entities/book.entity';
+import { Book } from '../entities/book.entity';
 import { CreateBookInput } from './dto/create-book.input';
 import { UpdateBookInput } from './dto/update-book.input';
+import { BookFiltersDto } from './dto/book-filters.input';
+import { PaginationResponseDto } from '../common/dto/pagination-response.dto';
 
 
 @Resolver(() => Book)
@@ -15,13 +17,13 @@ export class BookResolver {
     return this._bookService.create(createBookInput);
   }
 
-  @Query(() => [Book], { name: 'book' })
-  public async findAllBooks() {
-    return this._bookService.findAll();
+  @Query(() => [Book])
+  public async findAllBooks(@Args('filters') filters: BookFiltersDto): Promise<PaginationResponseDto<Book>> {
+    return this._bookService.findAll(filters);
   }
 
-  @Query(() => Book, { name: 'book' })
-  public async findOneBook(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => Book)
+  public async findOneBook(@Args('id', { type: () => Int }) id: number): Promise<Book | null> {
     return this._bookService.findOne(id);
   }
 
