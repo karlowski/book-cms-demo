@@ -53,7 +53,7 @@ export class AuthService {
     const userEntity = this._userRepository.create({
       ...signUpDto,
       password: hashedPassword,
-      role: RolesEnum.USER,
+      roles: [RolesEnum.USER],
     });
 
     await this._userRepository.save(userEntity);
@@ -71,7 +71,7 @@ export class AuthService {
 
     const tokens = await this._generateTokens({ 
       userId: user.id as number,
-      role: user.role as RolesEnum  
+      roles: user.roles as RolesEnum[]
     });
     await this._authRedisService.saveRefreshToken(user.id as number, tokens.refreshToken)
 

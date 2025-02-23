@@ -25,9 +25,16 @@ export class User {
 
   @Column({
     type: 'varchar',
-    
+    transformer: {
+      to(data: string[]): string | null {
+        return data ? data.join(',') : null;
+      },
+      from(data: string): string[] {
+        return data ? data.split(',') : [];
+      }
+    }
   })
-  role: RolesEnum;
+  roles: RolesEnum[];
 
   @Column()
   name?: string;

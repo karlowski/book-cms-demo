@@ -12,12 +12,12 @@ export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector, private jwtService: JwtService) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredRole = this.reflector.getAllAndOverride<RolesEnum>('role', [
+    const requiredRoles = this.reflector.getAllAndOverride<RolesEnum[]>('roles', [
       context.getHandler(),
       context.getClass(),
     ]);
     
-    if (!requiredRole) {
+    if (!requiredRoles) {
       return true;
     }
 
@@ -37,7 +37,7 @@ export class RolesGuard implements CanActivate {
     try {
       const user: IJwtPayload = this.jwtService.verify(token);
 
-      return requiredRole === user.role;
+      return requiredRoles.some((role) => user.roles.includes(role));
     } catch (error) {
       if (error instanceof TokenExpiredError) {
         throw new UnauthorizedException();
