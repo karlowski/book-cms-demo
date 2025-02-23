@@ -9,7 +9,7 @@ export class User1740222127432 implements MigrationInterface {
         password VARCHAR(255) NOT NULL,
         name VARCHAR(255) NULL,
         last_name VARCHAR(255) NULL,
-        roles TEXT CHECK (roles IN ('customer', 'admin')),
+        roles VARCHAR(255) DEFAULT 'user',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
