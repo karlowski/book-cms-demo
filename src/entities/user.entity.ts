@@ -1,7 +1,7 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { RolesEnum } from '../common/enums/roles.enum';
+import { Role } from './role.entity';
 
 
 @ObjectType()
@@ -26,18 +26,9 @@ export class User {
   @Column()
   password: string;
 
-  @Column({
-    type: 'varchar',
-    transformer: {
-      to(data: string[]): string | null {
-        return data ? data.join(',') : null;
-      },
-      from(data: string): string[] {
-        return data ? data.split(',') : [];
-      }
-    }
-  })
-  roles: RolesEnum[];
+  @ManyToMany(() => Role)
+  @JoinTable({ name: 'users_roles' })
+  roles: Role[];
 
   @Column()
   name?: string;

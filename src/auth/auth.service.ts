@@ -8,16 +8,18 @@ import * as bcrypt from 'bcrypt';
 import { User } from '../entities/user.entity';
 import { RedisSharedService } from '../common/services/redis-shared.service';
 import { SignUpInput } from './dto/sign-up.input';
-import { RolesEnum } from '../common/enums/roles.enum';
 import { AuthLoginResponseDto } from './dto/auth-login-response.dto';
 import { LoginInput } from './dto/login.input';
 import { IJwtPayload } from '../common/interfaces/jwt-payload.interface';
 import { AuthRedisService } from './auth-redis.service';
+import { PermissionsEnum } from '../common/enums/permissions.enum';
+import { Role } from '../entities/role.entity';
 
 
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectRepository(Role) private readonly _roleRepository: Repository<Role>,
     @InjectRepository(User) private readonly _userRepository: Repository<User>,
     private readonly _authRedisService: AuthRedisService,
     private readonly _configService: ConfigService,
@@ -26,7 +28,12 @@ export class AuthService {
   ) {}
 
   public async validateUser(email: string, pass: string): Promise<Partial<User>> {
-    const user = await this._userRepository.findOneBy({ email });
+    const user = await this._userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.roles', 'role')
+      .leftJoinAndSelect('role.permissions', 'permission')
+      .where('user.email = :email', { email })
+      .getOne();
     if (!user) {
       throw new UnauthorizedException('Bad credentials');
     }
@@ -53,8 +60,19 @@ export class AuthService {
     const userEntity = this._userRepository.create({
       ...signUpDto,
       password: hashedPassword,
-      roles: [RolesEnum.USER],
+      roles: [],
     });
+
+    const userRole = await this._roleRepository.findOne({
+      where: { title: 'user' },
+      relations: ['permissions'],
+    });
+
+    if (!userRole) {
+      throw new Error('Default role "user" not found');
+    }
+
+    userEntity.roles = [userRole];
 
     await this._userRepository.save(userEntity);
 
@@ -69,9 +87,11 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
+    const permissions = user.roles?.flatMap(role => role.permissions.map(p => p.title)) as PermissionsEnum[];
+
     const tokens = await this._generateTokens({ 
       userId: user.id as number,
-      roles: user.roles as RolesEnum[]
+      permissions
     });
     await this._authRedisService.saveRefreshToken(user.id as number, tokens.refreshToken)
 

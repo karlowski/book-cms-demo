@@ -1,6 +1,6 @@
-import { RolesEnum } from '../enums/roles.enum';
+import { PermissionsEnum } from '../enums/permissions.enum';
 
 export interface IJwtPayload {
   userId: number;
-  roles: RolesEnum[];
+  permissions: PermissionsEnum[];
 }
