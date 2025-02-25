@@ -37,6 +37,14 @@ export class RedisSharedService implements OnModuleInit, OnModuleDestroy {
     await this._redisClient.del(key);
   }
 
+  public async increment(key: string): Promise<number> {
+    return this._redisClient.incr(key);
+  }
+
+  public async expire(key: string, ttl: number): Promise<void> {
+    await this._redisClient.expire(key, ttl);
+  }
+
   public onModuleDestroy(): void {
     this._redisClient.quit();
   }

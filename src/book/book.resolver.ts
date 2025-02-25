@@ -7,16 +7,13 @@ import { CreateBookInput } from './dto/create-book.input';
 import { UpdateBookInput } from './dto/update-book.input';
 import { BookFiltersDto } from './dto/book-filters.input';
 import { PaginationResponseDto } from '../common/dto/pagination-response.dto';
-import { RolesPermissionAccess } from '../common/decorators/roles-permission-access.decorator';
-import { Roles } from '../common/decorators/roles.decorator';
-import { RolesEnum } from '../common/enums/roles.enum';
 import { Permissions } from '../common/decorators/permissions.decorator';
 import { PermissionsEnum } from '../common/enums/permissions.enum';
-import { PermissionsGuard } from '../common/guards/permissions.guard';
+import { PermissionAccess } from '../common/decorators/permission-access.decorator';
+import { RateLimitGuard } from '../common/guards/rate-limit.guard';
 
 
-@UseGuards(PermissionsGuard)
-@RolesPermissionAccess()
+@PermissionAccess()
 @Resolver(() => Book)
 export class BookResolver {
   constructor(private readonly _bookService: BookService) {}
@@ -27,12 +24,14 @@ export class BookResolver {
     return this._bookService.create(createBookInput);
   }
 
+  @UseGuards(RateLimitGuard)
   @Permissions(PermissionsEnum.READ)
   @Query(() => [Book])
   public async findAllBooks(@Args('filters') filters: BookFiltersDto): Promise<PaginationResponseDto<Book>> {
     return this._bookService.findAll(filters);
   }
 
+  @UseGuards(RateLimitGuard)
   @Permissions(PermissionsEnum.READ)
   @Query(() => Book)
   public async findOneBook(@Args('id', { type: () => Int }) id: number): Promise<Book | null> {

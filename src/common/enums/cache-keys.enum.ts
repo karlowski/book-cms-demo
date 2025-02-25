@@ -1,4 +1,5 @@
 export enum CacheKeysEnum {
   BOOK = 'book',
-  AUTHOR = 'author'
+  AUTHOR = 'author',
+  RATE_LIMIT='rateLimit'
 }

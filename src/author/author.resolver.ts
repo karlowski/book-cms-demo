@@ -1,5 +1,5 @@
-import { UseGuards } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
 
 import { AuthorService } from './author.service';
 import { Author } from '../entities/author.entity';
@@ -7,14 +7,13 @@ import { CreateAuthorInput } from './dto/create-author.input';
 import { UpdateAuthorInput } from './dto/update-author.input';
 import { AuthorFiltersDto } from './dto/author-filters.dto';
 import { PaginationResponseDto } from '../common/dto/pagination-response.dto';
-import { RolesPermissionAccess } from '../common/decorators/roles-permission-access.decorator';
+import { PermissionAccess } from '../common/decorators/permission-access.decorator';
 import { Permissions } from '../common/decorators/permissions.decorator';
 import { PermissionsEnum } from '../common/enums/permissions.enum';
-import { PermissionsGuard } from '../common/guards/permissions.guard';
+import { RateLimitGuard } from '../common/guards/rate-limit.guard';
 
 
-@UseGuards(PermissionsGuard)
-@RolesPermissionAccess()
+@PermissionAccess()
 @Resolver(() => Author)
 export class AuthorResolver {
   constructor(private readonly authorService: AuthorService) {}
@@ -25,12 +24,14 @@ export class AuthorResolver {
     return this.authorService.create(createAuthorInput);
   }
 
+  @UseGuards(RateLimitGuard)
   @Permissions(PermissionsEnum.READ)
   @Query(() => [Author])
   public async findAllAuthors(@Args('filters') filters: AuthorFiltersDto): Promise<PaginationResponseDto<Author>> {
     return this.authorService.findAll(filters);
   }
 
+  @UseGuards(RateLimitGuard)
   @Permissions(PermissionsEnum.READ)
   @Query(() => Author)
   public async findOneAuthor(@Args('id', { type: () => Int }) id: number): Promise<Author | null> {
