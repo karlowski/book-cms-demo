@@ -24,6 +24,8 @@
     "initialize-db": "node init.js"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.751.0",
+    "@aws-sdk/lib-dynamodb": "^3.751.0",
     "@nestjs/apollo": "^13.0.3",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.0",

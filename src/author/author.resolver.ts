@@ -1,5 +1,5 @@
+import { UseGuards, UseInterceptors } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { UseGuards } from '@nestjs/common';
 
 import { AuthorService } from './author.service';
 import { Author } from '../entities/author.entity';
@@ -11,6 +11,7 @@ import { PermissionAccess } from '../common/decorators/permission-access.decorat
 import { Permissions } from '../common/decorators/permissions.decorator';
 import { PermissionsEnum } from '../common/enums/permissions.enum';
 import { RateLimitGuard } from '../common/guards/rate-limit.guard';
+import { UserActivityMiddleware } from '../common/middlewares/user-activity.middleware';
 
 
 @PermissionAccess()
@@ -27,6 +28,7 @@ export class AuthorResolver {
   @UseGuards(RateLimitGuard)
   @Permissions(PermissionsEnum.READ)
   @Query(() => [Author])
+  @UseInterceptors(UserActivityMiddleware)
   public async findAllAuthors(@Args('filters') filters: AuthorFiltersDto): Promise<PaginationResponseDto<Author>> {
     return this.authorService.findAll(filters);
   }
@@ -34,6 +36,7 @@ export class AuthorResolver {
   @UseGuards(RateLimitGuard)
   @Permissions(PermissionsEnum.READ)
   @Query(() => Author)
+  @UseInterceptors(UserActivityMiddleware)
   public async findOneAuthor(@Args('id', { type: () => Int }) id: number): Promise<Author | null> {
     return this.authorService.findOne(id);
   }

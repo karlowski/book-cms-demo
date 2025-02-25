@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ThrottlerModule } from '@nestjs/throttler';
 import { join } from 'path';
 
 import { AppService } from './app.service';
@@ -42,18 +41,6 @@ import { entities } from './entities/entities.module';
         timezone: 'Z',
         logging: false
       }},
-    }),
-    ThrottlerModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        throttlers: [
-          {
-            name: 'short',
-            ttl: configService.get<number>('RATE_LIMIT_TTL') || 60,
-            limit: configService.get<number>('RATE_LIMIT') || 20
-          }
-        ]
-      })
     }),
     BookModule,
     AuthorModule,

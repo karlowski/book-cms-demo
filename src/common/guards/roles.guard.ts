@@ -37,7 +37,8 @@ export class RolesGuard implements CanActivate {
     try {
       const user: IJwtPayload = this.jwtService.verify(token);
 
-      return requiredRoles.some((role) => user.roles.includes(role));
+      // return requiredRoles.some((role) => user.roles.includes(role));
+      return false;
     } catch (error) {
       if (error instanceof TokenExpiredError) {
         throw new UnauthorizedException();
