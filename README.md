@@ -1,17 +1,17 @@
-Description
+📌 Description
 
--- Simple and robus CMS for books and authors;
--- utilize NestJS, GraphQL, TypeORM, PostreSQL, Redis, 
+-- Simple and robust CMS for books and authors; <br />
+-- utilize NestJS, GraphQL, TypeORM, PostreSQL, Redis; <br />
 
-Setup
+🔌 Setup
 
--- ensure PostreSQL and Redis servers are up;
--- ensure .env is complete;
--- $ npm install;
--- $ node init.js;
--- $ npm run typeorm:migrate;
+-- ensure <span color="#1589F0">PostreSQL</span> and <span color="#f03c15">Redis</span> servers are up; <br />
+-- ensure .env is complete; <br />
+-- 💲 npm install; <br />
+-- 💲 node init.js; <br />
+-- 💲 npm run typeorm:migrate; <br />
 
-Compile and run
+🚀 Compile and run
 
--- $ npm run start;
--- $ npm run start:dev;
+-- 💲 npm run start; <br />
+-- 💲 npm run start:dev; <br />
