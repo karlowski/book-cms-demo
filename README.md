@@ -5,7 +5,7 @@
 
 🔌 Setup
 
--- ensure <span color="#1589F0">PostreSQL</span> and <span color="#f03c15">Redis</span> servers are up; <br />
+-- ensure 🟦PostreSQL and 🟥Redis servers are up; <br />
 -- ensure .env is complete; <br />
 -- 💲 npm install; <br />
 -- 💲 node init.js; <br />
