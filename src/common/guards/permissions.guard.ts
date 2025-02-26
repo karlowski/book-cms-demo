@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
+import { GqlExecutionContext } from '@nestjs/graphql';
 import { Request } from 'express';
 
 import { PermissionsEnum } from '../enums/permissions.enum';
@@ -9,7 +10,15 @@ import { IJwtPayload } from '../interfaces/jwt-payload.interface';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
-constructor(private reflector: Reflector, private jwtService: JwtService) { }
+  constructor(
+    private reflector: Reflector, 
+    private jwtService: JwtService
+  ) { }
+
+  public getRequest(context: ExecutionContext) {
+    const ctx = GqlExecutionContext.create(context);
+    return ctx.getContext().req;
+  }
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredPermissions = this.reflector.getAllAndOverride<PermissionsEnum[]>('permissions', [
@@ -21,7 +30,7 @@ constructor(private reflector: Reflector, private jwtService: JwtService) { }
       return true;
     }
 
-    const request: Request = context.switchToHttp().getRequest();
+    const request: Request = this.getRequest(context);
     const authHeader = request.headers.authorization;
 
     if (!authHeader) {

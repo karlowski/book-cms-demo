@@ -66,7 +66,7 @@ export class AuthService {
     const userRole = await this._roleRepository
       .createQueryBuilder('role')
       .leftJoinAndSelect('role.permissions', 'permission')
-      .where('role.title = "user"')
+      .where(`role.title = 'user'`)
       .getOne();
 
     if (!userRole) {

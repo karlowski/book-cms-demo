@@ -11,7 +11,17 @@ export class Role {
   @Column({ unique: true })
   title: string;
 
-  @ManyToMany(() => Permission, (permission) => permission.roles, { cascade: true })
-  @JoinTable({ name: 'roles_permissions' })
+  @ManyToMany(() => Permission)
+  @JoinTable({ 
+    name: 'roles_permissions',
+    joinColumn: {
+      name: 'role_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'permission_id',
+      referencedColumnName: 'id',
+    }, 
+  })
   permissions: Permission[];
 }

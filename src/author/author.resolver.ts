@@ -12,6 +12,8 @@ import { Permissions } from '../common/decorators/permissions.decorator';
 import { PermissionsEnum } from '../common/enums/permissions.enum';
 import { RateLimitGuard } from '../common/guards/rate-limit.guard';
 import { UserActivityInterceptor } from '../common/interceptors/user-activity.interceptor';
+import { AuthorDto } from './dto/author.dto';
+import { AuthorPaginatedDto } from './dto/author-paginated.dto';
 
 
 @PermissionAccess()
@@ -27,7 +29,7 @@ export class AuthorResolver {
 
   @UseGuards(RateLimitGuard)
   @Permissions(PermissionsEnum.READ)
-  @Query(() => [Author])
+  @Query(() => AuthorPaginatedDto)
   @UseInterceptors(UserActivityInterceptor)
   public async findAllAuthors(@Args('filters') filters: AuthorFiltersDto): Promise<PaginationResponseDto<Author>> {
     return this.authorService.findAll(filters);
@@ -35,20 +37,20 @@ export class AuthorResolver {
 
   @UseGuards(RateLimitGuard)
   @Permissions(PermissionsEnum.READ)
-  @Query(() => Author)
+  @Query(() => AuthorDto)
   @UseInterceptors(UserActivityInterceptor)
   public async findOneAuthor(@Args('id', { type: () => Int }) id: number): Promise<Author | null> {
     return this.authorService.findOne(id);
   }
 
   @Permissions(PermissionsEnum.EDIT)
-  @Mutation(() => Author)
+  @Mutation(() => AuthorDto)
   public async updateAuthor(@Args('updateAuthorInput') updateAuthorInput: UpdateAuthorInput): Promise<void> {
     return this.authorService.update(updateAuthorInput.id, updateAuthorInput);
   }
 
   @Permissions(PermissionsEnum.EDIT)
-  @Mutation(() => Author)
+  @Mutation(() => AuthorDto)
   public async removeAuthor(@Args('id', { type: () => Int }) id: number): Promise<void> {
     return this.authorService.remove(id);
   }

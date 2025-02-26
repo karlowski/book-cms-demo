@@ -6,6 +6,7 @@ import {
   HttpStatus
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { GqlExecutionContext } from '@nestjs/graphql';
 
 import { RedisSharedService } from '../services/redis-shared.service';
 import { CacheKeysEnum } from '../enums/cache-keys.enum';
@@ -18,8 +19,13 @@ export class RateLimitGuard implements CanActivate {
     private readonly _redisService: RedisSharedService
   ) { }
 
+  public getRequest(context: ExecutionContext) {
+    const ctx = GqlExecutionContext.create(context);
+    return ctx.getContext().req;
+  }
+
   public async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
+    const request = this.getRequest(context);
     const ip = request.ip || request.connection.remoteAddress;
     const key = `${CacheKeysEnum.RATE_LIMIT}:${ip}`;
     const limit = this._configService.get<number>('RATE_LIMIT') || 10;

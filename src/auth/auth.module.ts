@@ -7,6 +7,7 @@ import { AuthResolver } from './auth.resolver';
 import { AuthRedisService } from './auth-redis.service';
 import { EntitiesModule } from '../entities/entities.module';
 import { CommonServiceModule } from '../common/services/common-service.module';
+import { JwtStrategy } from './jwt.strategy';
 
 
 @Module({
@@ -27,7 +28,8 @@ import { CommonServiceModule } from '../common/services/common-service.module';
   providers: [
     AuthResolver, 
     AuthService, 
-    AuthRedisService
-  ],
+    AuthRedisService,
+    JwtStrategy
+  ]
 })
 export class AuthModule {}

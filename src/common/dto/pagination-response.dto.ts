@@ -13,7 +13,4 @@ export class PaginationResponseDto<T> {
 
   @Field(() => Int)
   pagesTotal: number;
-
-  @Field(() => [Object])
-  items: T[];
 }

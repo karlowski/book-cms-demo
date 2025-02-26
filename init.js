@@ -6,10 +6,6 @@ dotenv.config({
   path: path.join(__dirname, 'config', '.env'),
 });
 
-console.log('USER: ', process.env.POSTGRES_USER);
-console.log('PASSWORD: ', `"${process.env.POSTGRES_PASSWORD}"`);
-console.log('password type: ', typeof process.env.POSTGRES_PASSWORD);
-
 const client = new Client({
   user: process.env.POSTGRES_USER,
   password: String(process.env.POSTGRES_PASSWORD) || '',
