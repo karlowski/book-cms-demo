@@ -11,7 +11,7 @@ import { Permissions } from '../common/decorators/permissions.decorator';
 import { PermissionsEnum } from '../common/enums/permissions.enum';
 import { PermissionAccess } from '../common/decorators/permission-access.decorator';
 import { RateLimitGuard } from '../common/guards/rate-limit.guard';
-import { UserActivityMiddleware } from '../common/middlewares/user-activity.middleware';
+import { UserActivityInterceptor } from '../common/interceptors/user-activity.interceptor';
 
 
 @PermissionAccess()
@@ -28,7 +28,7 @@ export class BookResolver {
   @UseGuards(RateLimitGuard)
   @Permissions(PermissionsEnum.READ)
   @Query(() => [Book])
-  @UseInterceptors(UserActivityMiddleware)
+  @UseInterceptors(UserActivityInterceptor)
   public async findAllBooks(@Args('filters') filters: BookFiltersDto): Promise<PaginationResponseDto<Book>> {
     return this._bookService.findAll(filters);
   }
@@ -36,7 +36,7 @@ export class BookResolver {
   @UseGuards(RateLimitGuard)
   @Permissions(PermissionsEnum.READ)
   @Query(() => Book)
-  @UseInterceptors(UserActivityMiddleware)
+  @UseInterceptors(UserActivityInterceptor)
   public async findOneBook(@Args('id', { type: () => Int }) id: number): Promise<Book | null> {
     return this._bookService.findOne(id);
   }

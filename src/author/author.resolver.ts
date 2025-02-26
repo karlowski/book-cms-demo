@@ -11,7 +11,7 @@ import { PermissionAccess } from '../common/decorators/permission-access.decorat
 import { Permissions } from '../common/decorators/permissions.decorator';
 import { PermissionsEnum } from '../common/enums/permissions.enum';
 import { RateLimitGuard } from '../common/guards/rate-limit.guard';
-import { UserActivityMiddleware } from '../common/middlewares/user-activity.middleware';
+import { UserActivityInterceptor } from '../common/interceptors/user-activity.interceptor';
 
 
 @PermissionAccess()
@@ -28,7 +28,7 @@ export class AuthorResolver {
   @UseGuards(RateLimitGuard)
   @Permissions(PermissionsEnum.READ)
   @Query(() => [Author])
-  @UseInterceptors(UserActivityMiddleware)
+  @UseInterceptors(UserActivityInterceptor)
   public async findAllAuthors(@Args('filters') filters: AuthorFiltersDto): Promise<PaginationResponseDto<Author>> {
     return this.authorService.findAll(filters);
   }
@@ -36,7 +36,7 @@ export class AuthorResolver {
   @UseGuards(RateLimitGuard)
   @Permissions(PermissionsEnum.READ)
   @Query(() => Author)
-  @UseInterceptors(UserActivityMiddleware)
+  @UseInterceptors(UserActivityInterceptor)
   public async findOneAuthor(@Args('id', { type: () => Int }) id: number): Promise<Author | null> {
     return this.authorService.findOne(id);
   }

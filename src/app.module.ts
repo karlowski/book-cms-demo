@@ -10,7 +10,7 @@ import { BookModule } from './book/book.module';
 import { AuthorModule } from './author/author.module';
 import { AuthModule } from './auth/auth.module';
 import { entities } from './entities/entities.module';
-
+import { DynamoDBModule } from './dynamodb/dynamodb.module';
 
 
 @Module({
@@ -25,10 +25,7 @@ import { entities } from './entities/entities.module';
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        console.log(join(__dirname, '..', 'config', '.env'));
-        console.log('PASSWORD: ', configService.get<string>('POSTGRES_PASSWORD')); 
-        return {
+      useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get<string>('POSTGRES_HOST'),
         port: configService.get<number>('POSTGRES_PORT'),
@@ -40,8 +37,9 @@ import { entities } from './entities/entities.module';
         cache: true,
         timezone: 'Z',
         logging: false
-      }},
+      }),
     }),
+    DynamoDBModule,
     BookModule,
     AuthorModule,
     AuthModule,
