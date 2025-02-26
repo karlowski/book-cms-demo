@@ -8,9 +8,9 @@ export class SignUpInput {
   @Field(() => String, { description: 'Password field' })
   password: string;
 
-  @Field(() => String, { description: 'Name field (optional)' })
+  @Field(() => String, { description: 'Name field (optional)', nullable: true })
   name?: string;
 
-  @Field(() => String, { description: 'Last name field (optional)' })
+  @Field(() => String, { description: 'Last name field (optional)', nullable: true })
   lastName?: string;
 }

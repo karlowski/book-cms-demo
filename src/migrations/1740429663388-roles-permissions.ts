@@ -27,19 +27,16 @@ export class rolesPermissions1740429663388 implements MigrationInterface {
     await queryRunner.query(`
         INSERT INTO roles (title) VALUES ('user'), ('admin')
         ON CONFLICT (title) DO NOTHING;
-      )
     `);
     await queryRunner.query(`
         INSERT INTO permissions (title) VALUES ('read'), ('edit')
         ON CONFLICT (title) DO NOTHING;
-      )
     `);
     await queryRunner.query(`
         INSERT INTO roles_permissions (role_id, permission_id)
         SELECT r.id, p.id FROM roles r, permissions p
         WHERE r.title = 'user' AND p.title = 'read'
         ON CONFLICT DO NOTHING;
-      )
     `);
   }
 

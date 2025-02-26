@@ -63,10 +63,11 @@ export class AuthService {
       roles: [],
     });
 
-    const userRole = await this._roleRepository.findOne({
-      where: { title: 'user' },
-      relations: ['permissions'],
-    });
+    const userRole = await this._roleRepository
+      .createQueryBuilder('role')
+      .leftJoinAndSelect('role.permissions', 'permission')
+      .where('role.title = "user"')
+      .getOne();
 
     if (!userRole) {
       throw new Error('Default role "user" not found');
