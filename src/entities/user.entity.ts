@@ -51,5 +51,5 @@ export class User {
     type: 'timestamp',
     default: () => 'current_timestamp',
   })
-  createdAt: Date;
+  createdAt: string;
 }

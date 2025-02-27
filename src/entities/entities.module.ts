@@ -6,7 +6,6 @@ import { Book } from './book.entity';
 import { User } from './user.entity';
 import { Role } from './role.entity';
 import { Permission } from './permission.entity';
-import { UserRole } from './user-role.entity';
 
 
 export const entities = [
@@ -14,8 +13,7 @@ export const entities = [
   Book,
   Permission,
   Role,
-  User,
-  UserRole
+  User
 ];
 
 @Global()

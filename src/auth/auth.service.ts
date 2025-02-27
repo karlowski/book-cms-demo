@@ -47,7 +47,7 @@ export class AuthService {
     return userData;
   }
 
-  public async signUp(signUpDto: SignUpInput): Promise<AuthLoginResponseDto> {
+  public async signUp(signUpDto: SignUpInput, permission: PermissionsEnum = PermissionsEnum.READ): Promise<AuthLoginResponseDto> {
     const { email, password } = signUpDto;
     const user = await this._userRepository.findOneBy({ email });
 
@@ -63,17 +63,13 @@ export class AuthService {
       roles: [],
     });
 
-    const userRole = await this._roleRepository
-      .createQueryBuilder('role')
-      .leftJoinAndSelect('role.permissions', 'permission')
-      .where(`role.title = 'user'`)
-      .getOne();
+    const roles = await this._getRoles(permission);
 
-    if (!userRole) {
-      throw new Error('Default role "user" not found');
+    if (!roles.length) {
+      throw new Error('No suitable user roles were found');
     }
 
-    userEntity.roles = [userRole];
+    userEntity.roles = roles;
 
     await this._userRepository.save(userEntity);
 
@@ -89,7 +85,6 @@ export class AuthService {
     }
 
     const permissions = user.roles?.flatMap(role => role.permissions.map(p => p.title)) as PermissionsEnum[];
-
     const tokens = await this._generateTokens({ 
       userId: user.id as number,
       permissions
@@ -142,5 +137,15 @@ export class AuthService {
     await this._redisSharedService.set(`refresh:${payload.userId}`, refreshToken, refreshTtl);
 
     return { accessToken, refreshToken };
+  }
+
+  private async _getRoles(permission: PermissionsEnum): Promise<Role[]> {
+    const whereQuery = `role.title ${permission === PermissionsEnum.EDIT ? `IN ('user', 'admin')` : `= 'user'`}`;
+    
+    return this._roleRepository
+      .createQueryBuilder('role')
+      .leftJoinAndSelect('role.permissions', 'permission')
+      .where(whereQuery)
+      .getMany();
   }
 }

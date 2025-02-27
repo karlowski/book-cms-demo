@@ -24,5 +24,5 @@ export class BookDto {
   author: AuthorDto;
 
   @Field()
-  createdAt: Date;
+  createdAt: string;
 }

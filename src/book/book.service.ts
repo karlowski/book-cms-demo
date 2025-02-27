@@ -9,6 +9,7 @@ import { Book } from '../entities/book.entity';
 import { BookFiltersDto } from './dto/book-filters.input';
 import { CacheRedisService } from '../common/services/cache-redis.service';
 import { CacheKeysEnum } from '../common/enums/cache-keys.enum';
+import { BookPaginatedDto } from './dto/book-paginated.dto';
 
 
 @Injectable()
@@ -36,11 +37,11 @@ export class BookService {
     return bookCreated;
   }
 
-  public async findAll(filters: BookFiltersDto): Promise<PaginationResponseDto<Book>> {
+  public async findAll(filters: BookFiltersDto): Promise<BookPaginatedDto> {
     const { page, take, title, publishedIn, authorId, authorName, orderBy = 'id', order = 'DESC' } = filters;
     const cacheKey = `${CacheKeysEnum.BOOK}:${JSON.stringify(filters)}`;
     
-    const cachedData = await this._cacheService.get<PaginationResponseDto<Book>>(cacheKey);
+    const cachedData = await this._cacheService.get<BookPaginatedDto>(cacheKey);
     if (cachedData) {
       return cachedData;
     }

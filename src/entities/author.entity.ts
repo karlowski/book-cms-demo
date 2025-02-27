@@ -28,6 +28,6 @@ export class Author {
     default: () => 'current_timestamp',
   })
   @Field()
-  createdAt: Date;
+  createdAt: string;
 }
 

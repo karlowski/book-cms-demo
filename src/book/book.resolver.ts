@@ -31,7 +31,7 @@ export class BookResolver {
   @Permissions(PermissionsEnum.READ)
   @Query(() => BookPaginatedDto)
   @UseInterceptors(UserActivityInterceptor)
-  public async findAllBooks(@Args('filters') filters: BookFiltersDto): Promise<PaginationResponseDto<Book>> {
+  public async findAllBooks(@Args('filters') filters: BookFiltersDto): Promise<BookPaginatedDto> {
     return this._bookService.findAll(filters);
   }
 

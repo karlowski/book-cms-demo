@@ -15,13 +15,14 @@ export class UserActivityInterceptor implements NestInterceptor {
     const gqlContext = GqlExecutionContext.create(context);
     const { user } = gqlContext.getContext().req;
 
+    const { userId } = user;
     const action = gqlContext.getInfo().fieldName;
     const variables = gqlContext.getArgs();
 
     return next.handle().pipe(
       tap(async () => {
         if (user) {
-          await this._userActivityLoggerService.log(user.id, action, variables);
+          await this._userActivityLoggerService.log(userId, action, variables);
         }
       }),
     );
